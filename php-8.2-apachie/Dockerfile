@@ -19,12 +19,16 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     nano \
-    supervisor
+    supervisor \
+    redis-server
 
 # Install Node.js 18 and npm
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g pm2
+
+# Install PHP Redis extension
+RUN pecl install redis && docker-php-ext-enable redis
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -55,3 +59,6 @@ RUN { \
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Start Redis
+CMD service redis-server start
