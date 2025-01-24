@@ -41,6 +41,9 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install pdo_mysql zip opcache intl bcmath mbstring exif pcntl soap ftp
 
+# Enable FTP over SSL (FTPS) support
+RUN docker-php-ext-install ftp && docker-php-ext-enable ftp
+
 # Configure PHP Options
 RUN { \
     echo 'expose_php = Off'; \
