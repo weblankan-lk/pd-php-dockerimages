@@ -46,19 +46,20 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Enable FTP over SSL (FTPS) support
 RUN docker-php-ext-install ftp && docker-php-ext-enable ftp
 
-# Configure PHP Options
-RUN { \
-    echo 'expose_php = Off'; \
-    echo 'memory_limit = 512M'; \
-    echo 'upload_max_filesize = 50M'; \
-    echo 'post_max_size = 50M'; \
-    echo 'max_execution_time = 180'; \
-    echo 'opcache.memory_consumption=128'; \
-    echo 'opcache.interned_strings_buffer=8'; \
-    echo 'opcache.max_accelerated_files=4000'; \
-    echo 'opcache.revalidate_freq=2'; \
-    echo 'opcache.fast_shutdown=1'; \
-} > /usr/local/etc/php/conf.d/php-optimizations.ini
+# Set PHP Configuration Options
+RUN echo "expose_php = Off\n" \
+    "memory_limit = 512M\n" \
+    "upload_max_filesize = 50M\n" \
+    "post_max_size = 50M\n" \
+    "max_execution_time = 180\n" \
+    "max_input_time = 300\n" \
+    "max_input_vars = 10000\n" \
+    "opcache.memory_consumption=128\n" \
+    "opcache.interned_strings_buffer=8\n" \
+    "opcache.max_accelerated_files=4000\n" \
+    "opcache.revalidate_freq=2\n" \
+    "opcache.fast_shutdown=1\n" \
+    > /usr/local/etc/php/conf.d/php-optimizations.ini
 
 # Configure Apache DocumentRoot to point to Laravel's public directory
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
