@@ -1,6 +1,6 @@
 # Global Laravel Application Deployer Dockerfile For WEBLANKAN v1.0.3 by Lahiru
 
-# Use PHP 8.2 with Apache
+# Use PHP 5.6 with Apache
 FROM php:5.6-apache
 
 # Maintainer information
@@ -14,37 +14,19 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
-    libssl-dev \  
-    openssl \  
+    libssl-dev \
+    openssl \
     zip \
     unzip \
     git \
     curl \
     nano \
-    supervisor \
-    redis-server
-
-# Install Node.js 18 and npm
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs && \
-    npm install -g pm2
-
-# Install PHP Redis extension
-RUN pecl install redis && docker-php-ext-enable redis
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache mod_rewrite for URL rewriting
 RUN a2enmod rewrite
-
-# Install PHP extensions required for Laravel
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install pdo_mysql zip opcache intl bcmath mbstring exif pcntl soap ftp
-
-# Enable FTP over SSL (FTPS) support
-RUN docker-php-ext-install ftp && docker-php-ext-enable ftp
 
 # Set PHP Configuration Options
 RUN echo "expose_php = Off\n" \
@@ -60,5 +42,3 @@ RUN echo "expose_php = Off\n" \
     "opcache.revalidate_freq=2\n" \
     "opcache.fast_shutdown=1\n" \
     > /usr/local/etc/php/conf.d/php-optimizations.ini
-
-
